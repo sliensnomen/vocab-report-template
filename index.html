@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>词测助手</title>
+  <script>
+    const REPORT_DATA = {
+      title: "词测助手测试结果",
+      student: "a",
+      testedAt: "2026年10月30日 22:00",
+      course: "雅思预备词汇2.1",
+      list: "List04",
+      wordCount: 5,
+      results: [
+        { label: "释义", score: 100, errors: [], skipped: [], overtime: ["influence"] },
+        { label: "拼写", score: 100, errors: [], skipped: [], overtime: [] },
+        { label: "词性", score: 40, errors: ["guard", "cost", "influence"], skipped: [], overtime: [] }
+      ],
+      details: [
+        { word: "simple", overtime: "", meaning: "简单的" },
+        { word: "increase", overtime: "", meaning: "增加" },
+        { word: "guard", overtime: "", meaning: "保卫" },
+        { word: "cost", overtime: "", meaning: "代价" },
+        { word: "influence", overtime: "释义", meaning: "影响" }
+      ]
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Arial, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      background: #111215;
+      color: #f3f3f3;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 56px 16px 64px; }
+    main { width: min(100%, 640px); margin: 0 auto; }
+
+    .report-card {
+      padding: 22px 18px 20px;
+      border-radius: 18px;
+      background: #fffaf0;
+      color: #2e2d29;
+      box-shadow: 0 12px 36px #0004;
+    }
+
+    h1 { margin: 0 0 14px; color: #96503f; font-size: 25px; line-height: 1.25; }
+    .meta { margin: 0; color: #44423b; font-size: 16px; line-height: 1.65; }
+    .result { padding: 20px 0 18px; border-top: 1px solid #dedbd3; }
+    .result:first-of-type { margin-top: 24px; }
+    .result-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+    .result-heading h2 { margin: 0; font-size: 19px; }
+    .score { font-size: 27px; font-weight: 700; }
+    .good { color: #187550; }
+    .bad { color: #b63830; }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .stat-label { margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+    .errors .stat-label { color: #a0443c; }
+    .skipped .stat-label { color: #867633; }
+    .overtime .stat-label { color: #867633; }
+    .tags { display: flex; flex-wrap: wrap; gap: 7px; min-height: 25px; }
+    .tag { padding: 3px 8px; border-radius: 12px; font-size: 14px; line-height: 1.25; }
+    .errors .tag { background: #f4e3df; color: #77615c; }
+    .skipped .tag, .overtime .tag { background: #fff0bd; color: #806f35; }
+    .empty { color: #77736b; font-size: 15px; }
+
+    .qr-panel { margin-top: 10px; padding: 14px 12px 16px; border: 1px solid #e0e0dc; border-radius: 14px; background: #fff; text-align: center; }
+    .qr-panel img { display: block; width: 144px; height: 144px; margin: 0 auto; object-fit: contain; }
+    .qr-panel p { margin: 10px 0 0; color: #777; font-size: 16px; font-weight: 700; }
+
+    .details { margin-top: 40px; }
+    .details h2 { margin: 0 0 14px; font-size: 29px; }
+    .explanation { margin: 0 0 20px; color: #eeeeee; font-size: 16px; line-height: 1.75; }
+    .table-wrap { overflow-x: auto; border: 1px solid #303137; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 11px 10px; border-right: 1px solid #303137; border-bottom: 1px solid #303137; text-align: left; white-space: nowrap; }
+    th:last-child, td:last-child { border-right: 0; }
+    tr:last-child td { border-bottom: 0; }
+    th { background: #202126; color: #c4c4c7; font-weight: 500; }
+    td { color: #b9b9bd; }
+    td:last-child { color: #e4e4e6; }
+
+    @media (max-width: 420px) {
+      body { padding: 32px 16px 48px; }
+      .report-card { padding: 20px 16px 18px; }
+      h1 { font-size: 23px; }
+      .stats { gap: 8px; }
+      .tag { padding-inline: 7px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article class="report-card" aria-labelledby="report-title">
+      <h1 id="report-title"></h1>
+      <p class="meta" id="report-meta"></p>
+      <div id="results"></div>
+      <section class="qr-panel" aria-label="报告二维码">
+        <img src="qr.png" alt="扫描查看完整报告的二维码">
+        <p>扫码查看完整报告</p>
+      </section>
+    </article>
+
+    <section class="details" aria-labelledby="details-title">
+      <h2 id="details-title">详情</h2>
+      <p class="explanation">学生答案框：绿色表示正确；红色表示错误；黄色表示跳过。用时栏：绿色表示不超过 15 秒；红色表示超过 15 秒。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>英文单词</th><th>超时项目</th><th>标准释义(中文)</th></tr></thead>
+          <tbody id="detail-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function makeTags(target, values) {
+      if (!values.length) {
+        const empty = document.createElement("span");
+        empty.className = "empty";
+        empty.textContent = "无";
+        target.append(empty);
+        return;
+      }
+      for (const value of values) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = value;
+        target.append(tag);
+      }
+    }
+
+    function renderReport(data) {
+      document.getElementById("report-title").textContent = data.title;
+      document.getElementById("report-meta").textContent = [
+        data.student, data.testedAt, data.course, data.list, `测试词数 ${data.wordCount}`
+      ].join(" · ");
+
+      const results = document.getElementById("results");
+      for (const result of data.results) {
+        const section = document.createElement("section");
+        section.className = "result";
+        const heading = document.createElement("div");
+        heading.className = "result-heading";
+        const title = document.createElement("h2");
+        title.textContent = result.label;
+        const score = document.createElement("span");
+        score.className = `score ${result.score >= 80 ? "good" : "bad"}`;
+        score.textContent = `${result.score}%`;
+        heading.append(title, score);
+
+        const stats = document.createElement("div");
+        stats.className = "stats";
+        const groups = [["错误", "errors", result.errors], ["跳过", "skipped", result.skipped], ["超时", "overtime", result.overtime]];
+        for (const [label, className, values] of groups) {
+          const stat = document.createElement("div");
+          stat.className = className;
+          const statLabel = document.createElement("div");
+          statLabel.className = "stat-label";
+          statLabel.textContent = label;
+          const tags = document.createElement("div");
+          tags.className = "tags";
+          makeTags(tags, values);
+          stat.append(statLabel, tags);
+          stats.append(stat);
+        }
+        section.append(heading, stats);
+        results.append(section);
+      }
+
+      const rows = document.getElementById("detail-rows");
+      for (const detail of data.details) {
+        const row = document.createElement("tr");
+        for (const value of [detail.word, detail.overtime || "—", detail.meaning]) {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.append(cell);
+        }
+        rows.append(row);
+      }
+    }
+
+    renderReport(REPORT_DATA);
+  </script>
+</body>
+</html>
