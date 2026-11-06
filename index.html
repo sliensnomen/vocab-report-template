@@ -5,26 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>词测助手</title>
   <script>
-    const REPORT_DATA = {
-      title: "词测助手测试结果",
-      student: "a",
-      testedAt: "2026年11月6日 20:45",
-      course: "预备词汇2.1",
-      list: "list5",
-      wordCount: 20,
-      results: [
-        { label: "释义", score: 90, errors: ["faith", "column"], skipped: [], overtime: ["section", "aim", "critical"] },
-        { label: "拼写", score: 100, errors: [], skipped: [], overtime: [] },
-        { label: "词性", score: 100, errors: [], skipped: [], overtime: [] }
-      ],
-      details: [
-        { word: "faith", overtime: "", meaning: "信念" },
-        { word: "column", overtime: "", meaning: "栏；列" },
-        { word: "section", overtime: "释义", meaning: "部分" },
-        { word: "aim", overtime: "释义", meaning: "目标" },
-        { word: "critical", overtime: "释义", meaning: "关键的" }
-      ]
+    const REPORTS = {
+      "5": {
+        title: "词测助手测试结果",
+        student: "a",
+        testedAt: "2026年11月6日 20:45",
+        course: "预备词汇2.1",
+        list: "list5",
+        wordCount: 20,
+        results: [
+          { label: "释义", score: 90, errors: ["faith", "column"], skipped: [], overtime: ["section", "aim", "critical"] },
+          { label: "拼写", score: 100, errors: [], skipped: [], overtime: [] },
+          { label: "词性", score: 100, errors: [], skipped: [], overtime: [] }
+        ],
+        details: [
+          { word: "faith", overtime: "", meaning: "信念" },
+          { word: "column", overtime: "", meaning: "栏；列" },
+          { word: "section", overtime: "释义", meaning: "部分" },
+          { word: "aim", overtime: "释义", meaning: "目标" },
+          { word: "critical", overtime: "释义", meaning: "关键的" }
+        ]
+      },
+      "6": {
+        title: "词测助手测试结果",
+        student: "a",
+        testedAt: "2026年11月6日 21:10",
+        course: "预备词汇2.1",
+        list: "list6",
+        wordCount: 20,
+        results: [
+          { label: "释义", score: 95, errors: ["journey"], skipped: [], overtime: ["ancient", "modern"] },
+          { label: "拼写", score: 100, errors: [], skipped: [], overtime: [] },
+          { label: "词性", score: 100, errors: [], skipped: [], overtime: [] }
+        ],
+        details: [
+          { word: "journey", overtime: "", meaning: "旅行" },
+          { word: "ancient", overtime: "释义", meaning: "古代的" },
+          { word: "modern", overtime: "释义", meaning: "现代的" }
+        ]
+      },
+      "7": {
+        title: "词测助手测试结果",
+        student: "a",
+        testedAt: "2026年11月6日 21:10",
+        course: "预备词汇2.1",
+        list: "list7",
+        wordCount: 20,
+        results: [
+          { label: "释义", score: 85, errors: ["balance", "smooth"], skipped: ["habit"], overtime: ["honest"] },
+          { label: "拼写", score: 100, errors: [], skipped: [], overtime: [] },
+          { label: "词性", score: 100, errors: [], skipped: [], overtime: [] }
+        ],
+        details: [
+          { word: "balance", overtime: "", meaning: "平衡" },
+          { word: "smooth", overtime: "", meaning: "光滑的" },
+          { word: "habit", overtime: "", meaning: "习惯" },
+          { word: "honest", overtime: "释义", meaning: "诚实的" }
+        ]
+      }
     };
+    const listKey = new URLSearchParams(window.location.search).get("list") || "5";
+    const REPORT_DATA = REPORTS[listKey] || REPORTS["5"];
+    const QR_FILES = { "5": "qr.png", "6": "qr-list6.png", "7": "qr-list7.png" };
   </script>
   <style>
     :root {
@@ -183,6 +225,7 @@
       }
     }
 
+    document.querySelector(".qr-panel img").src = QR_FILES[listKey] || QR_FILES["5"];
     renderReport(REPORT_DATA);
   </script>
 </body>
