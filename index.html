@@ -85,11 +85,31 @@
           { word: "receive", overtime: "拼写", meaning: "收到" },
           { word: "local", overtime: "词性", meaning: "当地的" }
         ]
+      },
+      "9": {
+        title: "词测助手测试结果",
+        student: "a",
+        testedAt: "2026年11月14日 13:49",
+        course: "预备词汇2.1",
+        list: "list9",
+        wordCount: 20,
+        results: [
+          { label: "释义", score: 90, errors: ["promise", "public"], skipped: [], overtime: ["general"] },
+          { label: "拼写", score: 95, errors: ["believe"], skipped: [], overtime: [] },
+          { label: "词性", score: 95, errors: ["present"], skipped: [], overtime: [] }
+        ],
+        details: [
+          { word: "promise", overtime: "", meaning: "承诺" },
+          { word: "public", overtime: "", meaning: "公众的" },
+          { word: "general", overtime: "释义", meaning: "总体的" },
+          { word: "believe", overtime: "拼写", meaning: "相信" },
+          { word: "present", overtime: "词性", meaning: "呈现" }
+        ]
       }
     };
     const listKey = new URLSearchParams(window.location.search).get("list") || "5";
     const REPORT_DATA = REPORTS[listKey] || REPORTS["5"];
-    const QR_FILES = { "5": "qr.png", "6": "qr-list6.png", "7": "qr-list7.png", "8": "qr-list8.png" };
+    const QR_FILES = { "5": "qr.png", "6": "qr-list6.png", "7": "qr-list7.png", "8": "qr-list8.png", "9": "qr-list9.png" };
   </script>
   <style>
     :root {
